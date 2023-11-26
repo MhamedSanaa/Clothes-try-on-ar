@@ -1,0 +1,8 @@
+Model Information:
+* title:	Artillery Wheel 1 (MP)
+* source:	https://sketchfab.com/3d-models/artillery-wheel-1-mp-90bc45e1f7aa4cbebedf16ff21c71d20
+* author:	KrStolorz (Krzysztof Stolorz) (https://sketchfab.com/KrStolorz)
+
+Model License:
+* license type:	SKETCHFAB Standard (https://sketchfab.com/licenses)
+* requirements:	Under basic restrictions, use worldwide, on all types of media, commercially or not, and in all types of derivative works

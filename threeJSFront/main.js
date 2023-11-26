@@ -1,7 +1,15 @@
-import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r132/build/three.module.js';
+import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module.js";
+// To allow for the camera to move around the scene
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/controls/OrbitControls.js";
+// To allow for importing the .gltf file
+import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
 
 let camera, scene, renderer;
 let video, videoTexture, videoImageContext;
+
+//Keep the 3D object on a global variable so we can access it later
+let object;
+
 
 async function init() {
 	// Set up Three.js scene
@@ -31,10 +39,31 @@ async function init() {
 	const videoPlane = new THREE.Mesh(videoGeometry, videoMaterial);
 	scene.add(videoPlane);
 
-	const geometry = new THREE.BoxGeometry(1, 1, 1);
-	const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-	const cube = new THREE.Mesh(geometry, material);
-	scene.add(cube);
+	const ambientLight = new THREE.AmbientLight(0xffffff,10); // soft white light
+	scene.add(ambientLight);
+
+	const loader = new GLTFLoader();
+
+	loader.load(
+		`Assets/artillery_wheel_1_mp/scene.gltf`,
+		function (gltf) {
+		  //If the file is loaded, add it to the scene
+		  object = gltf.scene;
+		  object.position.z=9
+		  object.rotation.y=45
+		  scene.add(object);
+		},
+		function (xhr) {
+		  //While it is loading, log the progress
+		  console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		},
+		function (error) {
+		  //If there is an error, log it
+		  console.error(error);
+		}
+	  );
+
+
 
 	// Position the camera to see the video plane
 	camera.position.z = 10;
