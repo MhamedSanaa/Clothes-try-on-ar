@@ -2,6 +2,7 @@ import * as THREE from "https://cdn.skypack.dev/three@0.129.0/build/three.module
 
 // To allow for importing the .gltf file
 import { GLTFLoader } from "https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js";
+import { Vector3 } from "three";
 
 let camera, scene, renderer;
 let video, out5, canvasCtx5, videoTexture, videoImageContext;
@@ -112,12 +113,11 @@ async function init() {
 	const loader = new GLTFLoader();
 
 	loader.load(
-		`Assets/artillery_wheel_1_mp/scene.gltf`,
+		`Assets/ybotscaled.gltf`,
 		function (gltf) {
 			//If the file is loaded, add it to the scene
 			object = gltf.scene;
-			object.position.z = 9;
-			object.rotation.y = 45;
+			object.position.z = 1;
 			scene.add(object);
 		},
 		function (xhr) {
