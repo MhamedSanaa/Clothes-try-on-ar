@@ -1,6 +1,13 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-let videoTexture, videoImageContext, canvasTexture
+let videoTexture, videoImageContext, canvasTexture, object;
+
+const loader = new GLTFLoader();
+
+/*const video5 = document.createElement("video");
+const	out5 = document.createElement("canvas");
+const	controlsElement5 = document.createElement("div");*/
 
 const video5 = document.getElementsByClassName('input_video5')[0];
 const out5 = document.getElementsByClassName('output5')[0];
@@ -8,6 +15,8 @@ const controlsElement5 = document.getElementsByClassName('control5')[0];
 const canvasCtx5 = out5.getContext('2d');
 
 const fpsControl = new FPS();
+
+let poseLandmarks = [];
 
 /*const spinner = document.querySelector('.loading');
 spinner.ontransitionend = () => {
@@ -20,6 +29,7 @@ function zColor(data) {
 }
 
 function onResultsPose(results) {
+  poseLandmarks = results.poseLandmarks;
   document.body.classList.add('loaded');
   fpsControl.tick();
 
@@ -75,8 +85,6 @@ const MediaPipeCamera = new Camera(video5, {
   onFrame: async () => {
     await pose.send({ image: video5 });
   },
-  width: 480,
-  height: 480
 });
 MediaPipeCamera.start();
 
@@ -111,42 +119,68 @@ new ControlPanel(controlsElement5, {
     pose.setOptions(options);
   });
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 //
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 //
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-//
-// Create a texture from the webcam feed
-videoTexture = new THREE.VideoTexture(video5);
-const videoMaterial = new THREE.MeshBasicMaterial({
-  map: videoTexture,
-});
-const videoGeometry = new THREE.PlaneGeometry(4, 4); // Plane dimensions (adjust as needed)
-const videoPlane = new THREE.Mesh(videoGeometry, videoMaterial);
-videoPlane.position.x = -2
-scene.add(videoPlane);
-//
+const ambientLight = new THREE.AmbientLight(0xffffff, 10); // soft white light
+scene.add(ambientLight);
+// // Create a texture from the webcam feed
+// videoTexture = new THREE.VideoTexture(video5);
+// const videoMaterial = new THREE.MeshBasicMaterial({
+//   map: videoTexture,
+// });
+// const videoGeometry = new THREE.PlaneGeometry(5, 5); // Plane dimensions (adjust as needed)
+// const videoPlane = new THREE.Mesh(videoGeometry, videoMaterial);
+// videoPlane.position.x = -4
+// scene.add(videoPlane);
+// //
 // Create a texture from the canvas feed
 canvasTexture = new THREE.CanvasTexture(out5);
 const canvasMaterial = new THREE.MeshBasicMaterial({
   map: canvasTexture,
 });
-const canvasGeometry = new THREE.PlaneGeometry(4, 4); // Plane dimensions (adjust as needed)
+const canvasGeometry = new THREE.PlaneGeometry(10,10);
 const canvasPlane = new THREE.Mesh(canvasGeometry, canvasMaterial);
-canvasPlane.position.x = 2
 scene.add(canvasPlane);
-//
-camera.position.z = 5;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Load a glTF resource
+loader.load(
+  // resource URL
+  'Assets/XBot.gltf',
+  // called when the resource is loaded
+  function (gltf) {
+
+    object = gltf.scene
+    object.scale.set(0.05,0.05,0.05)
+    //gltf.scene.children[0].children[0].rotation.set()
+    scene.add(object);
+    
+  },
+  // called while loading is progressing
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+  },
+  // called when loading has errors
+  function (error) {
+    console.log('An error happened : ',error);
+  }
+);
+
+
+
+
+camera.position.z = 10;
 //
 function animate() {
   requestAnimationFrame(animate);
-
+  
+  console.log(object.position);
+  console.log(poseLandmarks[0]);
+  const x = new THREE.Vector3(poseLandmarks[0].x,poseLandmarks[0].y,poseLandmarks[0].z+2);
+  object.position.set(x.x,x.y,x.z);
   // Update video texture
   if (videoTexture) {
     videoTexture.needsUpdate = true;
@@ -156,7 +190,6 @@ function animate() {
   if (canvasTexture) {
     canvasTexture.needsUpdate = true;
   }
-
   renderer.render(scene, camera);
 }
 animate();
