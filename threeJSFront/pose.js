@@ -12,6 +12,7 @@ const	controlsElement5 = document.createElement("div");*/
 const video5 = document.getElementsByClassName('input_video5')[0];
 const out5 = document.getElementsByClassName('output5')[0];
 const controlsElement5 = document.getElementsByClassName('control5')[0];
+
 const canvasCtx5 = out5.getContext('2d');
 
 const fpsControl = new FPS();
@@ -142,7 +143,7 @@ canvasTexture = new THREE.CanvasTexture(out5);
 const canvasMaterial = new THREE.MeshBasicMaterial({
   map: canvasTexture,
 });
-const canvasGeometry = new THREE.PlaneGeometry(10,10);
+const canvasGeometry = new THREE.PlaneGeometry(15,10);
 const canvasPlane = new THREE.Mesh(canvasGeometry, canvasMaterial);
 scene.add(canvasPlane);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +153,6 @@ loader.load(
   'Assets/XBot.gltf',
   // called when the resource is loaded
   function (gltf) {
-
     object = gltf.scene
     object.scale.set(0.05,0.05,0.05)
     //gltf.scene.children[0].children[0].rotation.set()
@@ -168,9 +168,6 @@ loader.load(
     console.log('An error happened : ',error);
   }
 );
-
-
-
 
 camera.position.z = 10;
 //
