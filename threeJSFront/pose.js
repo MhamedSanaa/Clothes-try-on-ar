@@ -32,6 +32,12 @@ function zColor(data) {
   return `rgba(0, ${255 * z}, ${255 * (1 - z)}, 1)`;
 }
 
+function newCoordination(x, y) {
+  var newX = (streamWidth / 2) * x - streamWidth / 2;
+  var newY = (streamHeight / 2) * x - streamHeight / 2;
+  return { x: newX, y: newY };
+}
+
 function onResultsPose(results) {
   poseLandmarks = results.poseLandmarks;
   document.body.classList.add("loaded");
@@ -125,6 +131,10 @@ new ControlPanel(controlsElement5, {
     pose.setOptions(options);
   });
 const scene = new THREE.Scene();
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// const cube = new THREE.Mesh(geometry, material);
+// scene.add(cube);
 const camera = new THREE.PerspectiveCamera(
   60,
   window.innerWidth / window.innerHeight,
@@ -223,7 +233,6 @@ function animate() {
 
   let middleEye = getMiddlePoint(LE, RE);
 
-  console.log("middleEye : ", middleEye);
   // console.log(object.position);
   // // console.log(poseLandmarks[0]);
   const x = new THREE.Vector3(
@@ -233,7 +242,10 @@ function animate() {
     0
   );
 
-  object.position.set(x.x, x.y, -x.z);
+  var cordinations = newCoordination(poseLandmarks[0].x, poseLandmarks[0].y);
+  console.log("x ", x, " coordinations : ", cordinations);
+  // object.position.set(cordinations.x, cordinations.y, poseLandmarks[0].z - 5);
+  object.position.set(x.x, x.y, 0);
   object.scale.set(0.3, 0.3, 0.3);
   // Update video texture
   if (videoTexture) {
