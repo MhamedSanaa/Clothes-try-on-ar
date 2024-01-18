@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-import { convert2Dto3D, diffBetweenLandMarks } from "./geometry";
+import { convert2Dto3D, getNormalPersonalized } from "./geometry";
 
 /////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// MediaPipe /////////////////////////////////
@@ -49,27 +49,27 @@ function onResultsPose(results) {
   //     return gradient;
   //   },
   // });
-  // drawLandmarks(
-  //   canvasCtx5,
-  //   Object.values(POSE_LANDMARKS_LEFT).map(
-  //     (index) => results.poseLandmarks[index]
-  //   ),
-  //   { color: zColor, fillColor: "#FF0000" }
-  // );
-  // drawLandmarks(
-  //   canvasCtx5,
-  //   Object.values(POSE_LANDMARKS_RIGHT).map(
-  //     (index) => results.poseLandmarks[index]
-  //   ),
-  //   { color: zColor, fillColor: "#00FF00" }
-  // );
-  // drawLandmarks(
-  //   canvasCtx5,
-  //   Object.values(POSE_LANDMARKS_NEUTRAL).map(
-  //     (index) => results.poseLandmarks[index]
-  //   ),
-  //   { color: zColor, fillColor: "#AAAAAA" }
-  // );
+  drawLandmarks(
+    canvasCtx5,
+    Object.values(POSE_LANDMARKS_LEFT).map(
+      (index) => results.poseLandmarks[index]
+    ),
+    { color: zColor, fillColor: "#FF0000" }
+  );
+  drawLandmarks(
+    canvasCtx5,
+    Object.values(POSE_LANDMARKS_RIGHT).map(
+      (index) => results.poseLandmarks[index]
+    ),
+    { color: zColor, fillColor: "#00FF00" }
+  );
+  drawLandmarks(
+    canvasCtx5,
+    Object.values(POSE_LANDMARKS_NEUTRAL).map(
+      (index) => results.poseLandmarks[index]
+    ),
+    { color: zColor, fillColor: "#AAAAAA" }
+  );
   canvasCtx5.restore();
 }
 
@@ -293,17 +293,8 @@ function animate() {
   object.scale.z = (0.2 / 1.5) * point1.distanceTo(point2);
   //////////////////////Rotation
 
-  let leftEyeNoseVector = diffBetweenLandMarks(
-    poseLandmarks[5],
-    poseLandmarks[0]
-  );
-  let rightEyeNoseVector = diffBetweenLandMarks(
-    poseLandmarks[2],
-    poseLandmarks[0]
-  );
-
-  let direction = leftEyeNoseVector.cross(rightEyeNoseVector);
-  console.log(direction);
+  let direction=getNormalPersonalized(poseLandmarks[5],poseLandmarks[0],poseLandmarks[2])
+  console.log(poseLandmarks[0]);
   var arrowHelper = new THREE.ArrowHelper(
     direction.normalize(),
     new THREE.Vector3(0, 0, 0),
