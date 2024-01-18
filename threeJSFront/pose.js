@@ -49,27 +49,27 @@ function onResultsPose(results) {
   //     return gradient;
   //   },
   // });
-  drawLandmarks(
-    canvasCtx5,
-    Object.values(POSE_LANDMARKS_LEFT).map(
-      (index) => results.poseLandmarks[index]
-    ),
-    { color: zColor, fillColor: "#FF0000" }
-  );
-  drawLandmarks(
-    canvasCtx5,
-    Object.values(POSE_LANDMARKS_RIGHT).map(
-      (index) => results.poseLandmarks[index]
-    ),
-    { color: zColor, fillColor: "#00FF00" }
-  );
-  drawLandmarks(
-    canvasCtx5,
-    Object.values(POSE_LANDMARKS_NEUTRAL).map(
-      (index) => results.poseLandmarks[index]
-    ),
-    { color: zColor, fillColor: "#AAAAAA" }
-  );
+  // drawLandmarks(
+  //   canvasCtx5,
+  //   Object.values(POSE_LANDMARKS_LEFT).map(
+  //     (index) => results.poseLandmarks[index]
+  //   ),
+  //   { color: zColor, fillColor: "#FF0000" }
+  // );
+  // drawLandmarks(
+  //   canvasCtx5,
+  //   Object.values(POSE_LANDMARKS_RIGHT).map(
+  //     (index) => results.poseLandmarks[index]
+  //   ),
+  //   { color: zColor, fillColor: "#00FF00" }
+  // );
+  // drawLandmarks(
+  //   canvasCtx5,
+  //   Object.values(POSE_LANDMARKS_NEUTRAL).map(
+  //     (index) => results.poseLandmarks[index]
+  //   ),
+  //   { color: zColor, fillColor: "#AAAAAA" }
+  // );
   canvasCtx5.restore();
 }
 
@@ -293,15 +293,40 @@ function animate() {
   object.scale.z = (0.2 / 1.5) * point1.distanceTo(point2);
   //////////////////////Rotation
 
-  let direction=getNormalPersonalized(poseLandmarks[5],poseLandmarks[0],poseLandmarks[2])
-  console.log(poseLandmarks[0]);
-  var arrowHelper = new THREE.ArrowHelper(
-    direction.normalize(),
-    new THREE.Vector3(0, 0, 0),
-    3,
-    0xff0000
+  poseLandmarks[2].z = Math.abs(poseLandmarks[2].z);
+  poseLandmarks[5].z = Math.abs(poseLandmarks[2].z);
+
+  // Calculate the direction vector from one eye to the other
+  const eyeDirection = new THREE.Vector3().subVectors(
+    poseLandmarks[2],
+    poseLandmarks[5]
+  ).normalize();
+  console.log(eyeDirection)
+
+  // Calculate the rotation to align the glasses with the eye direction
+  const quaternionEyeDirection = new THREE.Quaternion().setFromUnitVectors(
+    new THREE.Vector3(1, 0, 0),
+    eyeDirection
   );
-  scene.add(arrowHelper);
+
+  // Rotate the glasses
+  object.rotation.setFromQuaternion(quaternionEyeDirection);
+  object.rotation.x *= -1;
+  object.rotation.y *= -1;
+  object.rotation.z *= -1;
+
+
+
+
+  // let direction=getNormalPersonalized(poseLandmarks[5],poseLandmarks[0],poseLandmarks[2])
+  // console.log(poseLandmarks[0]);
+  // var arrowHelper = new THREE.ArrowHelper(
+  //   direction.normalize(),
+  //   new THREE.Vector3(0, 0, 0),
+  //   3,
+  //   0xff0000
+  // );
+  // scene.add(arrowHelper);
   // cube.position.x = -8;
   // Update video texture
   if (videoTexture) {
