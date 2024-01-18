@@ -149,11 +149,6 @@ document.body.appendChild(renderer.domElement);
 const ambientLight = new THREE.AmbientLight(0xffffff, 10); // soft white light
 scene.add(ambientLight);
 
-// const geometry = new THREE.BoxGeometry(1, 1, 1);
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// scene.add(cube);
-
 // Create a texture from the canvas feed
 canvasTexture = new THREE.CanvasTexture(out5);
 const canvasMaterial = new THREE.MeshBasicMaterial({
@@ -191,23 +186,6 @@ for (
 // glassesPivot.scale.set(0.05, 0.05, 0.05);
 // scene.add(glassesPivot);
 
-// const nosePositionGeometry = new THREE.SphereGeometry(2, 32, 16);
-// const nosePositionMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-// const nosePosition = new THREE.Mesh(nosePositionGeometry, nosePositionMaterial);
-// nosePosition.position.set(0, 0, 0);
-// nosePosition.scale.set(0.05, 0.05, 0.05);
-// scene.add(nosePosition);
-
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
-cube.position.set(-8, 5, -5);
-scene.add(cube);
-const geometry1 = new THREE.BoxGeometry(1, 1, 1);
-const material1 = new THREE.MeshBasicMaterial({ color: 0x00ffaa });
-const cube1 = new THREE.Mesh(geometry1, material1);
-cube1.position.set(-8, 5, -5);
-scene.add(cube1);
 
 // Load a glTF resource
 loader.load(
